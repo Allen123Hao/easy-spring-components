@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.hedgie.component.util.spring.easylog.EasyLogAutoConfig
