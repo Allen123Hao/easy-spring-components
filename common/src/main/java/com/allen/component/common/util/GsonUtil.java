@@ -1,4 +1,4 @@
-package com.hedgie.service.common;
+package com.allen.component.common.util;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 用户资产变更记录
- * @author : houchen
- * @since : 2023/3/20
+ * @author Allen
+ * @version 1.0
+ * @since 2024/3/20 10:55
  */
 public class GsonUtil {
 

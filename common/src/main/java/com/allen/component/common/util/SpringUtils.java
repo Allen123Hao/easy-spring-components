@@ -1,4 +1,4 @@
-package com.hedgie.service.common;
+package com.allen.component.common.util;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

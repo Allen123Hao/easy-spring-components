@@ -60,6 +60,44 @@ public Result createUser(@RequestBody User user) {
 }
 ```
 
+### 3. EasyPulsar
+Pulsar消息组件，通过注解方式快速实现Pulsar消息发布和订阅功能。
+
+#### 主要特性
+- 支持通过注解方式配置Producer和Consumer
+- 自动创建和管理Pulsar连接和会话
+- 支持多主题订阅
+- 基于Apache Pulsar，性能优异
+- 支持自定义消息序列化
+
+#### 使用示例
+```java
+// 消费者示例
+@Slf4j
+@ConsumerHandler(name = "test-customer", topic = "test-msg")
+public class MessageConsumer implements CustomerConsumer {
+
+    @Override
+    @Subscription
+    public void receive(DomainMessage eventMessage) {
+        log.info("接收到消息：{}", GsonUtil.toJson(eventMessage));
+    }
+}
+
+// 生产者示例
+@Slf4j
+@ProducerHandler(name = "test-producer", topic = "test-msg")
+public class MessageProducer implements CustomerProducer {
+
+    public void send(DomainMessage message) throws PulsarClientException {
+        Producer<String> producer = getProducer();
+        String msg = serialize(message);
+        log.info("发送消息：{}", msg);
+        producer.send(msg);
+    }
+}
+```
+
 ## 快速开始
 
 ### Maven依赖
@@ -73,6 +111,12 @@ public Result createUser(@RequestBody User user) {
 <dependency>
     <groupId>com.allen.component</groupId>
     <artifactId>easylog</artifactId>
+    <version>${version}</version>
+</dependency>
+
+<dependency>
+    <groupId>com.allen.component</groupId>
+    <artifactId>easy-spring-pulsar</artifactId>
     <version>${version}</version>
 </dependency>
 ```
@@ -109,11 +153,40 @@ server:
 
 注意：请将OSS配置中的敏感信息（如accessKey、accessSecret）替换为您自己的配置，并确保这些信息的安全性。建议在生产环境中使用配置中心或环境变量来管理这些敏感信息。
 
+#### EasyPulsar配置
+```yaml
+pulsar:
+  server:
+    url: pulsar://localhost:6650  # Pulsar 服务器地址
+common:
+  env: dev  # 环境配置，用于区分不同环境的topic
+```
+
+#### 核心接口和注解
+
+**1. 消费者相关**
+- `@ConsumerHandler`: 标记一个类为Pulsar消费者，需要指定name和topic属性
+- `@Subscription`: 标记一个方法为订阅方法，该方法将接收消息
+- `CustomerConsumer`: 消费者接口，实现此接口可获得消息处理能力
+
+**2. 生产者相关**
+- `@ProducerHandler`: 标记一个类为Pulsar生产者，需要指定name和topic属性
+- `CustomerProducer`: 生产者接口，提供getProducer()和serialize()方法，实现此接口可发送消息
+
+**3. 消息体**
+- `DomainMessage`: 消息基类，所有消息都应该继承此类，支持泛型以传递不同类型的消息内容
+
+#### 使用建议
+- 每个业务模块的消费者和生产者应使用唯一的name
+- 建议为不同环境（开发、测试、生产）配置不同的common.env值
+- 对于重要消息，建议实现消息重试和错误处理机制
+
 ## 环境要求
 - JDK 17+
 - Spring Boot 3.0.0+
 - MySQL 8.0+（如果使用EasyLog组件）
 - 阿里云OSS（如果使用异步导出功能）
+- Apache Pulsar 2.10+（如果使用EasyPulsar组件）
 
 ## 依赖说明
 - hutool-all: 5.8.15
@@ -121,6 +194,7 @@ server:
 - aviator: 5.3.3
 - nacos-client: 2.2.1（可选，用于动态配置）
 - aliyun-sdk-oss: 3.17.0（可选，用于异步导出）
+- pulsar-client: 3.0.0（可选，用于EasyPulsar组件）
 
 ## 许可证
 Apache License 2.0
