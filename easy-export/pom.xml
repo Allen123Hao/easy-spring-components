@@ -9,7 +9,7 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>easylog</artifactId>
+    <artifactId>easy-export</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -18,11 +18,6 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>com.allen.component</groupId>
-            <artifactId>easyexport</artifactId>
-            <version>${project.version}</version>
-        </dependency>
         <dependency>
             <groupId>com.allen.component</groupId>
             <artifactId>common</artifactId>
